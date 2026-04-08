@@ -11,7 +11,7 @@ CLI tool designed to scrape and download files from your university's Moodle LMS
   - Files (`/mod/resource`)
   - Nested Directories (`/mod/folder`)
   - Assignment Attachments (`/mod/assign`)
-  - **Quizzes** (`/mod/quiz`): Scrapes your highest graded attempt review, extracting the full question text, multiple choice options, your answer, correct answer, and grade. The output is cleanly formatted into a `.json` file, making it perfect for feeding into a Graph Database, an Anki Deck, or experimenting with RAG/LLM embeddings!
+  - **Quizzes** (`/mod/quiz`): Scrapes your highest graded attempt review, extracting the full question text, multiple choice options, your answer, correct answer, and grade. The output is formatted into a `.json` file
 - **External Link Archiving**: Extracts third-party links (like YouTube or Google Drive) found in lessons or assignment prompts and aggregates them into a clean `links.csv` file inside your class folder.
 - **Flexible Selection**: Download all classes, specific lists (e.g., `0, 2, 4`), or exclusionary filters (e.g., `all except 1`).
 
