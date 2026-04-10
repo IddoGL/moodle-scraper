@@ -15,6 +15,7 @@ class MoodleScraper:
         self.session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
         })
+        self.gdrive_links = {}  # {url: (course_dir, title)} to deduplicate
 
     def login(self) -> bool:
         login_url = f"{self.base_url}/login/index.php"
@@ -206,7 +207,7 @@ class MoodleScraper:
                 if href.startswith('http') and not href.startswith(self.base_url):
                     save_link_to_csv(assign_dir, text, href)
 
-    def scrape_url_module(self, url, course_dir):
+    def scrape_url_module(self, url, course_dir, module_name=None):
         """Pages with /mod/url/view.php redirect or contain the external link."""
         response = self.session.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -215,8 +216,16 @@ class MoodleScraper:
         workaround = soup.find('div', class_='urlworkaround')
         if workaround and workaround.find('a'):
             actual_url = workaround.find('a')['href']
-            title = soup.find('h2').get_text(strip=True) if soup.find('h2') else "External Link"
-            save_link_to_csv(course_dir, title, actual_url)
+            # Use the Moodle hyperlink label passed from the course page,
+            # falling back to the page heading only if not available
+            title = module_name or (soup.find('h2').get_text(strip=True) if soup.find('h2') else "External Link")
+            
+            # Check if it's a view-only Google Drive link
+            if 'drive.google.com/file' in actual_url and '/view' in actual_url:
+                if actual_url not in self.gdrive_links:
+                    self.gdrive_links[actual_url] = (course_dir, title)
+            else:
+                save_link_to_csv(course_dir, title, actual_url)
 
     def scrape_quiz(self, url, course_dir, module_name):
         """Scrapes a Moodle quiz, finding the highest graded review attempt and exporting to JSON."""
@@ -335,7 +344,7 @@ class MoodleScraper:
                 
             elif '/mod/url/view.php' in href:
                 # External URL Link
-                self.scrape_url_module(href, course_dir)
+                self.scrape_url_module(href, course_dir, module_name)
                 
             elif '/mod/quiz/view.php' in href:
                 # Quiz JSON Export
