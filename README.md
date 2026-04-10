@@ -11,10 +11,9 @@ A CLI tool to scrape and download files from a Moodle LMS. It handles authentica
   - Files (`/mod/resource`)
   - Folders (`/mod/folder`)
   - Assignment Attachments (`/mod/assign`)
-  - **Quizzes** (`/mod/quiz`): Extracts the highest graded attempt review (question text, options, chosen answer, correct answer, and grade). Outputs to a `.json` file.
-- **External Links**: Extracts third-party links (e.g., YouTube, Google Drive) and saves them to a `links.csv` file in the course folder.
-- **Google Drive Downloads (Optional)**: Supports downloading "View-Only" Google Drive PDFs using Playwright. It bypasses the download restriction by taking screenshots of each page and compiling them into a PDF using your existing local Chrome profile.
-- **Course Selection**: Download all classes, specific lists (e.g., `0, 2, 4`), or use exclusions (e.g., `all except 1`).
+  - **Quizzes** (`/mod/quiz`): Scrapes your highest graded attempt review, extracting the full question text, multiple choice options, your answer, correct answer, and grade. The output is cleanly formatted into a `.json` file, making it perfect for feeding into a Graph Database, an Anki Deck, or experimenting with RAG/LLM embeddings!
+- **External Link Archiving**: Extracts third-party links (like YouTube or Google Drive) found in lessons or assignment prompts and aggregates them into a clean `links.csv` file inside your class folder.
+- **Flexible Selection**: Download all classes, specific lists (e.g., `0, 2, 4`), or exclusionary filters (e.g., `all except 1`).
 
 ## Setup
 
